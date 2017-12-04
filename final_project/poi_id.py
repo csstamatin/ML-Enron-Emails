@@ -109,14 +109,6 @@ for feet in range(len(arr_data)):
                 arr_data[feet][ppoip] = abs(arr_data[feet][ppoip])
 
 
-toscl_data = arr_data[1:]
-poi_data = arr_data[:1]
-scalr = MinMaxScaler()
-fstsc_data = scalr.fit_transform(arr_data)
-for scset in fstsc_data:
-    poi_data.append(scset)
-scld_data = poi_data
-
 new_data = []
 
 for lstcnt in range(len(arr_data[0])):
@@ -143,7 +135,8 @@ sss = StratifiedShuffleSplit(n_splits=1000, test_size=0.3, random_state=42)
 estimators = [("select", pcaf), ('clf', adab)]
 pipe = Pipeline(estimators)
 param_grid = dict(select__n_components=range(1, 10),
-                  clf__n_estimators=[5, 10, 20, 30, 40, 50, 100])
+                  clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
+                  clf__algorithm=["SAMME", "SAMME.R"], clf__learning_rate=[.2, .5, 1, 2, 5])
                 #   clf__n_neighbors=range(1,10), clf__leaf_size=[30, 40 ,50])
 grid = GridSearchCV(pipe, param_grid, scoring="f1", cv=sss)
 grid.fit(features, labels)
@@ -153,8 +146,9 @@ clf = grid.best_estimator_
 # features_train, features_test, labels_train, labels_test = \
 #     train_test_split(features, labels, test_size=0.3, random_state=42)
 
-test_classifier(clf, my_dataset, features_list)
+prec, recl = test_classifier(clf, my_dataset, features_list)
+output = "Precision: " + str(round(prec, ndigits=4)) + "\n" + "Recall: " + str(round(recl, ndigits=4))
 # dump_classifier_and_data(clf, my_dataset, features_list)
 
-winsound.Beep(500, 1000)
-textDone()
+# winsound.Beep(500, 1000)
+textDone(output)
