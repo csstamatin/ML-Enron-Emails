@@ -5,7 +5,7 @@ import pickle
 import winsound
 from time import time
 sys.path.append("../tools/")
-sys.path.append("C://Users/Costa/OneDrive/Documents/PyFiles")
+sys.path.append("C://Users/cssta/OneDrive/Documents/PyFiles")
 from code_alarm import textDone
 
 from feature_format import featureFormat, targetFeatureSplit
