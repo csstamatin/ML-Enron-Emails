@@ -132,13 +132,15 @@ rfcl = RandomForestClassifier()
 adab = AdaBoostClassifier()
 gaus = GaussianNB()
 svcl = SVC()
-sss = StratifiedShuffleSplit(n_splits=10, test_size=0.3, random_state=42)
-estimators = [("select", pcaf), ('clf', adab)]
+sss = StratifiedShuffleSplit(n_splits=100, test_size=0.3, random_state=42)
+estimators = [("select", pcaf), ('clf', kncl)]
 pipe = Pipeline(estimators)
-param_grid = dict(select__n_components=range(3, 10),
-                  clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
-                  clf__learning_rate=[.2, .5, 1, 2, 5])
-                #   clf__n_neighbors=range(1,10), clf__leaf_size=[30, 40 ,50])
+param_grid = dict(select__n_components=range(2, 10), 
+                  clf__metric=["euclidean", "minkowski"],
+                #   clf__bootstrap=[True, False])
+                #   clf__n_estimators=[5, 10, 20, 30, 40, 50, 100])
+                #   clf__learning_rate=[.2, .5, 1, 2, 5])
+                  clf__n_neighbors=range(2,10), clf__leaf_size=[2, 5, 10, 20, 30])
 grid = GridSearchCV(pipe, param_grid, scoring="f1", cv=sss)
 grid.fit(features, labels)
 clf = grid.best_estimator_
@@ -150,7 +152,7 @@ clf = grid.best_estimator_
 prec, recl = test_classifier(clf, my_dataset, features_list)
 # prec, recl = [.57589, .347468]
 output = "Precision: %s \nRecall: %s \nTime: %s" % (str(round(prec, ndigits=4)),
-         str(round(recl, ndigits=4)), round(time()-t0, 3))
+         str(round(recl, ndigits=4)), round(time()-t0, 1))
 # dump_classifier_and_data(clf, my_dataset, features_list)
 # print output
 # winsound.Beep(500, 1000)
