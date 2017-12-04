@@ -3,8 +3,9 @@
 import sys
 import pickle
 import winsound
+from time import time
 sys.path.append("../tools/")
-sys.path.append("C://Users/cssta/OneDrive/Documents/PyFiles")
+sys.path.append("C://Users/Costa/OneDrive/Documents/PyFiles")
 from code_alarm import textDone
 
 from feature_format import featureFormat, targetFeatureSplit
@@ -24,7 +25,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.feature_selection import SelectPercentile, f_classif, SelectKBest
 from sklearn.pipeline import Pipeline
 from tester import test_classifier
-
+t0 = time()
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
@@ -132,11 +133,11 @@ adab = AdaBoostClassifier()
 gaus = GaussianNB()
 svcl = SVC()
 sss = StratifiedShuffleSplit(n_splits=1000, test_size=0.3, random_state=42)
-estimators = [("select", pcaf), ('clf', adab)]
+estimators = [("select", pcaf), ('clf', gaus)]
 pipe = Pipeline(estimators)
-param_grid = dict(select__n_components=range(1, 10),
-                  clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
-                  clf__algorithm=["SAMME", "SAMME.R"], clf__learning_rate=[.2, .5, 1, 2, 5])
+param_grid = dict(select__n_components=range(1, 10))
+                #   clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
+                #   clf__algorithm=["SAMME", "SAMME.R"], clf__learning_rate=[.2, .5, 1, 2, 5])
                 #   clf__n_neighbors=range(1,10), clf__leaf_size=[30, 40 ,50])
 grid = GridSearchCV(pipe, param_grid, scoring="f1", cv=sss)
 grid.fit(features, labels)
@@ -147,8 +148,10 @@ clf = grid.best_estimator_
 #     train_test_split(features, labels, test_size=0.3, random_state=42)
 
 prec, recl = test_classifier(clf, my_dataset, features_list)
-output = "Precision: " + str(round(prec, ndigits=4)) + "\n" + "Recall: " + str(round(recl, ndigits=4))
+# prec, recl = [.57589, .347468]
+output = "Precision: %s \nRecall: %s \nTime: %s" % (str(round(prec, ndigits=4)),
+         str(round(recl, ndigits=4)), round(time()-t0, 3))
 # dump_classifier_and_data(clf, my_dataset, features_list)
-
+# print output
 # winsound.Beep(500, 1000)
 textDone(output)
