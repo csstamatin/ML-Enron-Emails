@@ -132,12 +132,12 @@ rfcl = RandomForestClassifier()
 adab = AdaBoostClassifier()
 gaus = GaussianNB()
 svcl = SVC()
-sss = StratifiedShuffleSplit(n_splits=1000, test_size=0.3, random_state=42)
-estimators = [("select", pcaf), ('clf', gaus)]
+sss = StratifiedShuffleSplit(n_splits=10, test_size=0.3, random_state=42)
+estimators = [("select", pcaf), ('clf', adab)]
 pipe = Pipeline(estimators)
-param_grid = dict(select__n_components=range(1, 10))
-                #   clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
-                #   clf__algorithm=["SAMME", "SAMME.R"], clf__learning_rate=[.2, .5, 1, 2, 5])
+param_grid = dict(select__n_components=range(3, 10),
+                  clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
+                  clf__learning_rate=[.2, .5, 1, 2, 5])
                 #   clf__n_neighbors=range(1,10), clf__leaf_size=[30, 40 ,50])
 grid = GridSearchCV(pipe, param_grid, scoring="f1", cv=sss)
 grid.fit(features, labels)
