@@ -1,0 +1,6 @@
+Machine Learning Project Enron POI
+
+1:  The goal of this project is to use machine learning algorithms, feature selection and evaluation to find potential persons of interest(POI) in the data. The data itself is all numerical, but split into two groups, financial and email data for individuals at Enron. The financial data is the salary, bonuses, etc. of each person and the email data is the counts of emails to and from POI as well as totals. There is also a binary feature for identifying known POI, 1 for POI, 0 for not. The POI feature as labels can be used along with machine learning algorithms to predict POI in data given.
+There was one outlier in the data set, total, which was removed, and several mistakes that were addressed. The errors were incorrectly signed entries, as well as entries in the wrong place. Both found and fixed before creating the features and labels.
+
+2:  My original feature selection didn’t use pipelines or cross validation, but basic decision trees, PCA, and selectkbest/selectprecentile. 
