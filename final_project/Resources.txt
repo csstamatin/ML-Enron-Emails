@@ -1,0 +1,7 @@
+RESOURCES LIST
+
+
+Sklearn documentation
+udacity forums
+machinelearningmastery.com
+python documentation

@@ -5,8 +5,8 @@ import pickle
 import winsound
 from time import time
 sys.path.append("../tools/")
-sys.path.append("C://Users/cssta/OneDrive/Documents/PyFiles")
-from code_alarm import textDone
+# sys.path.append("C://Users/cssta/OneDrive/Documents/PyFiles")
+# from code_alarm import textDone
 
 from feature_format import featureFormat, targetFeatureSplit
 from tester import dump_classifier_and_data
@@ -25,7 +25,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.feature_selection import SelectPercentile, f_classif, SelectKBest
 from sklearn.pipeline import Pipeline
 from tester import test_classifier
-t0 = time()
+# t0 = time()
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
@@ -35,7 +35,7 @@ features_list = ['poi', 'salary', 'total_payments', "expenses",
                 'exercised_stock_options', 'other', 'long_term_incentive',
                 'restricted_stock', 'director_fees', 'to_messages',
                 'from_poi_to_this_person', 'from_messages',
-                'from_this_person_to_poi', 'shared_receipt_with_poi',
+                'from_this_person_to_poi', 'shared_receipt_with_poi', "bonus",
                 "mes_from_poi_ratio", "mes_to_poi_ratio", "all_poi_mes_ratio"] 
                 # You will need to use more features
 
@@ -75,6 +75,8 @@ for i in data_dict:
         data_dict[i]["all_poi_mes_ratio"] = allrat
 
 data_dict.pop("TOTAL", 0)
+data_dict.pop("TRAVEL AGENCY IN THE PARK", 0)
+data_dict.pop("LOCKHART EUGENE E", 0)
 my_dataset = data_dict
 
 
@@ -109,7 +111,6 @@ for feet in range(len(arr_data)):
             if arr_data[feet][ppoip] < 0:
                 arr_data[feet][ppoip] = abs(arr_data[feet][ppoip])
 
-
 new_data = []
 
 for lstcnt in range(len(arr_data[0])):
@@ -125,21 +126,40 @@ scld_data = scalr.fit_transform(new_data)
 labels, features = targetFeatureSplit(scld_data)
 
 pcaf = PCA()
-selector = SelectKBest()
+selk = SelectKBest()
+selp = SelectPercentile()
 kncl = KNeighborsClassifier()
 dtcl = DecisionTreeClassifier()
 rfcl = RandomForestClassifier()
 adab = AdaBoostClassifier()
 gaus = GaussianNB()
 svcl = SVC()
+
+# dtft = dtcl.fit(features, labels)
+# print "decision tree"
+# for y in range(len(dtft.feature_importances_)):
+#     if dtft.feature_importances_[y] > .1:
+#         print features_list[y], dtft.feature_importances_[y]
+
+# selector = SelectKBest(k=6)
+# skb = selector.fit(features, labels)
+# print "Select k best"
+# for j in skb.get_support(indices=True):
+#     print features_list[j], skb.scores_[j]
+
+
+# dopca = PCA(n_components=5).fit(features)
+# print "PCA \n", dopca.explained_variance_ratio_
+
+
 sss = StratifiedShuffleSplit(n_splits=1000, test_size=0.3, random_state=42)
 estimators = [("select", pcaf), ('clf', gaus)]
 pipe = Pipeline(estimators)
-param_grid = dict(select__n_components=range(2, 10))
+param_grid = dict(select__n_components=range(1, 10))
                 #   clf__metric=["euclidean", "minkowski"],
                 #   clf__bootstrap=[True, False])
-                #   clf__n_estimators=[5, 10, 20, 30, 40, 50, 100])
-                #   clf__learning_rate=[.2, .5, 1, 2, 5])
+                #   clf__n_estimators=[5, 10, 20, 30, 40, 50, 100],
+                #   clf__learning_rate=[ 1, 2, 5])
                 #   clf__n_neighbors=range(2,10), clf__leaf_size=[2, 5, 10, 20, 30])
 grid = GridSearchCV(pipe, param_grid, scoring="f1", cv=sss)
 grid.fit(features, labels)
@@ -148,12 +168,14 @@ clf = grid.best_estimator_
 
 # features_train, features_test, labels_train, labels_test = \
 #     train_test_split(features, labels, test_size=0.3, random_state=42)
-
-prec, recl = test_classifier(clf, my_dataset, features_list)
-# prec, recl = [.57589, .347468]
-output = "Precision: %s \nRecall: %s \nTime: %s" % (str(round(prec, ndigits=4)),
-         str(round(recl, ndigits=4)), round(time()-t0, 1))
+# test_classifier(clf, my_dataset, features_list)
+# prec, recl = test_classifier(clf, my_dataset, features_list)
+# # prec, recl = [.57589, .347468]
+# output = "Precision: %s \nRecall: %s \nTime: %s" % (str(round(prec, ndigits=4)),
+#          str(round(recl, ndigits=4)), round(time()-t0, 1))
 dump_classifier_and_data(clf, my_dataset, features_list)
 # print output
 # winsound.Beep(500, 1000)
 # textDone(output)
+
+

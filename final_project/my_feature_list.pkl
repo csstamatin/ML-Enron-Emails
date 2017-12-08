@@ -37,10 +37,12 @@ aS'from_this_person_to_poi'
 p18
 aS'shared_receipt_with_poi'
 p19
-aS'mes_from_poi_ratio'
+aS'bonus'
 p20
-aS'mes_to_poi_ratio'
+aS'mes_from_poi_ratio'
 p21
-aS'all_poi_mes_ratio'
+aS'mes_to_poi_ratio'
 p22
+aS'all_poi_mes_ratio'
+p23
 a.
